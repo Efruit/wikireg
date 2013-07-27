@@ -26,6 +26,10 @@ func main () {
 	lg.Log(lg.INFO, "Initiating parse job...")
 	for _, v := range flag.Args() {
 		parser(v)
+		err := os.Remove(v)
+		if err != nil {
+			lg.Log(lg.ERROR, "Failed to remove file")
+		}
 	}
 }
 
