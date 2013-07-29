@@ -134,10 +134,6 @@ const WIKITEXT=`
 {_{_unresearched_}_}
 {{end}}
 
-==Raw export==
-{_{_TODO|[[User:wowaname|wowaname]]: What do you want here?_}_}
-{_{_raw|replace_}_}
-
 ==References==
 Sourced from a .reg dump file
 `
