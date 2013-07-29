@@ -181,12 +181,13 @@ func parser(s string) {
 			}
 		}()
 
-		tmpa, err := url.QueryUnescape(string(tmp))
+		/*tmpa, err := url.QueryUnescape(string(tmp))
 		if err != nil {
 			lg.Log(lg.DEBUG,err.Error())
 			return
-		}
-		tmpb := strings.Replace(tmpa, "\r", "", -1)
+		}*/
+
+		tmpb := strings.Replace(tmpb, "\r", "", -1)
 
 		if *dbgmode {
 			regfhd, err := ioutil.TempFile(os.TempDir(), "regp-post-")
