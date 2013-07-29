@@ -187,7 +187,7 @@ func parser(s string) {
 			return
 		}*/
 
-		tmpb := strings.Replace(tmpa, "\r", "", -1)
+		tmpb := strings.Replace(string(tmp), "\r", "", -1)
 
 		if *dbgmode {
 			regfhd, err := ioutil.TempFile(os.TempDir(), "regp-post-")
