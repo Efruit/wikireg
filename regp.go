@@ -292,6 +292,7 @@ func parser(s string) {
 		for k, v := range buff {
 			lg.Log(lg.DEBUG, k)
 			if aok2 {
+				api.Login(USER, PASSWD)
 				t := api.GetToken("edit")
 				lg.Log(lg.TRACE, t.Tokens.Edittoken)
 				params := url.Values{
@@ -308,6 +309,7 @@ func parser(s string) {
 					lg.Log(lg.DEBUG, string(rbody))
 				}
 			}
+			api.Login(USER, PASSWD)
 			t := api.GetToken("edit")
 			lg.Log(lg.TRACE, t.Tokens.Edittoken)
 
