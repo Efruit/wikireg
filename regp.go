@@ -347,6 +347,8 @@ func ParseType(s string) (int){
 				return -1
 			}
 			return i
+		case strings.HasPrefix(s, "hex:"):
+			return REG_BINARY
 		default:
 			lg.Log(lg.ERROR, "Type invalid or not found")
 			lg.Log(lg.TRACE, s)
