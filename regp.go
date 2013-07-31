@@ -121,11 +121,6 @@ const ADDTEXT=`{_{_rt|name={{.Key}}|type={{.Type}}|value={{.Default}}|usedby=(un
 <!-- BOT: ADDHERE -->`
 
 const WIKITEXT=`
-{_{_rt-start|{_{_unresearched_}_}_}_}
-{_{_rt|key|name={{.Key}}_}_}
-{_{_rt|name={{.Key}}|type={{.Type}}|value={{.Default}}|usedby=(unknown)_}_}
-<!-- BOT: ADDHERE -->
-{_{_rt-end_}_}
 '''{{.Key}}''' is a key in [[{{hive .Key}}]].
 
 {{ range .Values }}
