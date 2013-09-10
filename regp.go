@@ -144,12 +144,21 @@ Sourced from a .reg dump file
 `
 
 func parser(s string) {
-		now := time.Now()
+		var now = time.Now()
+		var parses time.Time
+		var parsee time.Time
+		var ups time.Time
+		var upe time.Time
 		defer func(){
 			naw := time.Now().Sub(now)
-			lg.Log(lg.TRACE, naw.String())
+			nzw := parses.Sub(parsee)
+			nkw := ups.Sub(upe)
+			lg.Log(lg.TRACE, "Total:" + naw.String())
+			lg.Log(lg.TRACE, "Parse:" + nzw.String())
+			lg.Log(lg.TRACE, "Post:" + nkw.String())
 		}()
 
+		parses = time.Now()
 		tmp, err := ioutil.ReadFile(s)
 		if err != nil {
 			lg.Log(lg.ERROR, err.Error())
@@ -266,6 +275,7 @@ func parser(s string) {
 
 				lg.Log(lg.DEBUG, fmt.Sprintf("%v=%v\n", vvv, rr))
 			}
+			
 			rs, _ := registry.RawString(vv, "@")
 			var swiggy = swiki{Key:vv, Default: rs}
 			for _, vvv := range r {
@@ -283,7 +293,9 @@ func parser(s string) {
 		} else {
 			lg.Log(lg.DEBUG, "aok = true, continuing")
 		}
+		parsee = time.Now()
 
+		ups = time.Now()
 		hkeywiki := url.URL{
 			Scheme: "http",
 			Host: "hkey.n0v4.com",
@@ -332,6 +344,7 @@ func parser(s string) {
 				lg.Log(lg.DEBUG, string(rbody))
 			}
 		}
+		upe = time.Now()
 }
 
 func ParseType(s string) (int){
