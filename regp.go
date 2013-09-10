@@ -151,8 +151,8 @@ func parser(s string) {
 		var upe time.Time
 		defer func(){
 			naw := time.Now().Sub(now)
-			nzw := parses.Sub(parsee)
-			nkw := ups.Sub(upe)
+			nzw := parsee.Sub(parses)
+			nkw := upe.Sub(ups)
 			lg.Log(lg.TRACE, "Total:" + naw.String())
 			lg.Log(lg.TRACE, "Parse:" + nzw.String())
 			lg.Log(lg.TRACE, "Post:" + nkw.String())
