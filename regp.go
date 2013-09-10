@@ -12,6 +12,7 @@ import (
 	mwapi "github.com/kracekumar/go-mwapi"
 	"time"
 	"bytes"
+	"strconv"
 	"html/template"
 )
 
@@ -41,6 +42,7 @@ var PASSWD string
 var DBHOST string
 
 const (
+	ERROR = -1
 	REG_NONE = 0
 	REG_SZ = 1
 	REG_EXPAND_SZ = 2
@@ -70,6 +72,14 @@ var names = []string{
 	"REG_FULL_RESOURCE_DESCRIPTOR",
 	"REG_RESOURCE_REQUIREMENTS_LIST",
 	"REG_QWORD",
+}
+
+func GetName(t int) string {
+	if REG_QWORD < t || t < REG_NONE {
+		return "ERROR"
+	} else {
+		return names[t]
+	}
 }
 
 // thing: it's an unfortunate fact of life that, because of the nature of the Windows Registry, some private data will slip through in ways we can't even begin to anticipate
@@ -243,7 +253,7 @@ func parser(s string) {
 
 			for _, vvv := range r {
 				rr, err := registry.RawString(vv, vvv)
-				if strings.HasPrefix(rr, "-") {
+				if rr == "-" {
 					lg.Log(lg.TRACE, "- found")
 					aok = false // ya blew it
 								// ya could'a had it all
@@ -261,7 +271,8 @@ func parser(s string) {
 			for _, vvv := range r {
 				rr, _ := registry.RawString(vv, vvv)
 				var i = ParseType(rr)
-				swiggy.Values=append(swiggy.Values, swiki{Key:vvv, Type: names[i]})
+				lg.Log(lg.DEBUG, i)
+				swiggy.Values=append(swiggy.Values, swiki{Key:vvv, Type: GetName(i)})
 			}
 			buff[vv] = Render(swiggy)
 		}
@@ -326,24 +337,39 @@ func parser(s string) {
 func ParseType(s string) (int){
 	switch {
 		case strings.HasPrefix(s, "\""):
+			lg.Log(lg.DEBUG, fmt.Sprintf("REG_SZ: %s", s))
 			return REG_SZ
 		case strings.HasPrefix(s, "dword:"):
+			lg.Log(lg.DEBUG, fmt.Sprintf("REG_DWORD: %s", s))
 			return REG_DWORD
 		case strings.HasPrefix(s, "hex("):
-			var flak string
-			var i int
-			n, err := fmt.Sscanf(s, "hex(%d):%s", i, flak)
-			if n < 2 {
+			lg.Log(lg.DEBUG, "Parsing hex()")
+			var g = string([]byte(s)[4])
+			var ii int64
+			var iii int
+			var err error
+
+			ii, err = strconv.ParseInt(g, 16, 0)
+			if err != nil {
+				lg.Log(lg.ERROR, "MALFUNCTION: Non-recognized byte (stage 2) in hex()")
+				lg.Log(lg.ERROR, s)
 				lg.Log(lg.ERROR, err.Error())
 				return -1
 			}
-			if !(REG_NONE < i && i < REG_QWORD) {
+			
+			iii = int(ii)
+
+			if !(REG_NONE <= iii && iii <= REG_QWORD) {
 				lg.Log(lg.ERROR, "Type invalid or absent")
 				lg.Log(lg.TRACE, s)
+				lg.Log(lg.TRACE, iii)
+				lg.Log(lg.TRACE, "!(REG_NONE =< iii && iii =< REG_QWORD)")
 				return -1
 			}
-			return i
+			lg.Log(lg.DEBUG, fmt.Sprintf("hex(%s)(%v)(%v): %s", GetName(iii), iii, ii, s))
+			return iii
 		case strings.HasPrefix(s, "hex:"):
+			lg.Log(lg.DEBUG, fmt.Sprintf("REG_BINARY: %s", s))
 			return REG_BINARY
 		default:
 			lg.Log(lg.ERROR, "Type invalid or not found")
